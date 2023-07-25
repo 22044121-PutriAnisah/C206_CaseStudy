@@ -19,7 +19,9 @@ public class C206_CaseStudy {
 		
 		currencyArr[0] = c1;
 		
-
+		ArrayList<feedback> feedbackList = new ArrayList<feedback>(); 
+		feedback f1 = new feedback("best store"); 
+		feedbackList.add(f1);
 	}
 
 }
