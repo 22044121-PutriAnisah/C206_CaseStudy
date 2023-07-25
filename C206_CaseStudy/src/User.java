@@ -1,3 +1,7 @@
+
+
+
+
 /**
  * 
  */
@@ -7,12 +11,12 @@
  *
  */
 public class User {
-	String name;
-	String email;
-	String password;
-	int phoneNum;
+	private String name;
+	private String email;
+	private String password;
+	private int phoneNum;
 
-	public User(String name, String email, String password) {
+	public User(String name, String email, String password,int phoneNum) {
 		super();
 		this.name = name;
 		this.email = email;

@@ -1,9 +1,18 @@
-
+import java.util.ArrayList;
 public class C206_CaseStudy {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		hellowm
+		ArrayList<User> userList = new ArrayList<User>();
+		User user1 = new User("Alan Tan","alantan@abc.com","Alantan_123",80081234);
+		
+		
+		
+		
+		
+		
+		ArrayList<admin> adminList = new ArrayList<admin>();
+		admin admin1 = new admin("Joshua Lim","JoshLim_123");
+		
 
 	}
 
