@@ -8,12 +8,10 @@ public class C206_CaseStudy {
 		
 		
 		
-		
-		
-		
 		ArrayList<admin> adminList = new ArrayList<admin>();
 		admin admin1 = new admin("Joshua Lim","JoshLim_123");
 		adminList.add(admin1);
+		
 		
 		
 		currency[] currencyArr = new currency[100];
