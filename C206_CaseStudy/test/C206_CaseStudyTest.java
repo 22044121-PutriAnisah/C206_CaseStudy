@@ -13,11 +13,18 @@ public class C206_CaseStudyTest {
 	private User user1;
 	private User user2;
 	private User user3;
+
+	private Transaction t1;
+	private Transaction t2;
+	private Transaction t3;
+	private Transaction t4;
 	
 	private ArrayList<Admin> adminList;
 	private ArrayList<User> userList;
 	
-
+	private ArrayList<Transaction> transactionList;
+	
+	
 	public C206_CaseStudyTest() { //add comment
 		super();
 	}
@@ -33,6 +40,8 @@ public class C206_CaseStudyTest {
 		
 		adminList = new ArrayList<Admin>();
 		userList = new ArrayList<User>();
+
+		
 		
 	}
 
@@ -140,8 +149,91 @@ public class C206_CaseStudyTest {
 	// Account
 	
 	//Transaction
+	@Before
+	public void setUp() throws Exception {
+		//prepare test data
+		t1 = new Transaction(2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved");
+		t2 = new Transaction(2, 2, "15/07/2022", 300.00, "RM", 4000.00);
+		t3 = new Transaction(3, 1, "01/12/2022", 700.00, "USD", 12000.00, "Approved");
+		t4 = new Transaction(3, 2, "28/09/2022", 200.00, "", 7000.00);
+		
+		transactionList = new ArrayList<Transaction>();
+	}
+
+	@Test
+	public void testAddTransaction() {
+		//Test 1 - Boundary
+		// Transaction list is not null and it is empty
+		assertNotNull("Test if there is a valid Transaction arraylist to add to.", transactionList);
+		assertEquals("Test that the Transaction arraylist is empty.", 0, transactionList.size());
+		
+		//Test 2 - Normal
+		//Given an empty list, after adding 1 transaction, the size of the list is 1
+		transactionList.add(new Transaction(2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved"));		
+		assertEquals("Test that the Transaction arraylist size is 1.", 1, transactionList.size());
+			    
+		//Test 3 - Error
+		// Add an item
+		transactionList.add(new Transaction(2, 2, "15/07/2022", 1000.00, "", 9000.00));
+		assertEquals("Test that the Transaction arraylist size is now 2.", 2, transactionList.size());
+	}
+	
+	@Test
+	public void testViewAllTransaction() {
+		//Test 1 - Boundary
+		// Test if Transaction list is not null and empty
+		assertNotNull("Test if there is a valid Transaction arraylist to add to", transactionList);
+		assertEquals("Test that the Transaction arraylist is empty.", 0, transactionList.size());
+		
+		//Test 2 - Normal
+		transactionList.add(new Transaction(2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved"));
+		transactionList.add(new Transaction(3, 1, "01/12/2022", 700.00, "USD", 12000.00, "Approved"));
+		//Test that the list is not empty
+		assertEquals("Test that Transaction arraylist size is 2.", 2, transactionList.size());
+		//Attempt to retrieve the Transactions for userID 2
+		String testOutput = "";
+		String allTransaction = C206_CaseStudy.retrieveAllTransaction(transactionList, 2);
+		testOutput = String.format("%-15d %-15d %-18s $%-19.2f %-20s $%-17.2f %-10s\n",2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved");
+		//Test that the details are displayed correctly
+		assertEquals("Test that the display is correct.", allTransaction, testOutput);
+		
+		//Test 3 - Error
+		//Test that there is no Transaction for User
+		String noTransactions = C206_CaseStudy.retrieveAllTransaction(transactionList, 5);
+		// Verify that the output is an empty string since there are no transactions
+        assertEquals("Test that the display is correct.", "", noTransactions);		
+	}
+	
+	@Test
+	public void testDeleteTransaction() {
+		//Test 1 - Boundary
+		// Test if Transaction list is not null and empty
+		assertNotNull("Test if there is valid Transaction arraylist to add to", transactionList);
+		assertEquals("Test that the Transaction arraylist is empty.", 0, transactionList.size());
+
+	    //Test 2 - Normal
+		Transaction transaction1 = new Transaction(2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved");
+	    // Add transactions to the list
+	    transactionList.add(transaction1);
+	    // Perform the deletion (let's assume user confirms)
+	    C206_CaseStudy.deleteTransaction(transactionList, userList, 2, 1, 'Y');
+	    // Verify that the transaction has been deleted
+	    assertNull("Test that the deleted transaction is not found.", C206_CaseStudy.getMatchingTransactionID(1, transactionList));
+	    assertEquals("Test that Transaction arraylist size is 1 after deletion.", 0, transactionList.size());
+		
+	    //Test 3 - Error
+	    //Prepare some transactions for testing
+	    Transaction transaction2 = new Transaction(2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved");
+	    // Add a transaction to the list
+	    transactionList.add(transaction2);
+	    // Attempt to delete a transaction with non-matching IDs
+	    C206_CaseStudy.deleteTransaction(transactionList, userList, 3, 4, 'Y');
+	    // Verify that the transaction list is unchanged
+	    assertEquals("Test that Transaction arraylist size is 1 after unsuccessful deletion.", 1, transactionList.size());
+	}
 	
 	// Rate
+	// write code
 	
 	// Feedback
 	@Before
@@ -239,8 +331,16 @@ public class C206_CaseStudyTest {
 		admin1 = null;
 		userList = null;
 		adminList = null;
+
+		t1 = null;
+		t2 = null;
+		t3 = null;
+		t4 = null;
+		transactionList = null;
+		
 		fb1 = null;
 		fb2 = null;
+		
 	}
 
 
