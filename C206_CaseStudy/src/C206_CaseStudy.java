@@ -46,6 +46,14 @@ public class C206_CaseStudy {
 		 * transactionList.add(new Transaction(2, 1, LocalDate.parse("28/09/2022",
 		 * date), 800.00, "RM", 7000.00));
 		 */
+		// Transaction ArrayList:
+		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+		transactionList.add(new Transaction(2, 1, "01/07/2022", 500.00, "USD", 10000.00, "Approved"));
+		transactionList.add(new Transaction(2, 2, "15/07/2022", 1000.00, "RM", 9000.00));
+		transactionList.add(new Transaction(3, 1, "01/12/2021", 700.00, "USD", 12000.00, "Approved"));
+		transactionList.add(new Transaction(3, 2, "28/09/2022", 2000.00, "RM", 10000.00));
+		transactionList.add(new Transaction(4, 1, "06/02/2022", 1000.00, "USD", 5000.00, "Approved"));
+		transactionList.add(new Transaction(4, 2, "12/05/2022", 600.00, "RM", 4400.00));
 
 		// Account array
 		// Account ArrayList
@@ -262,6 +270,16 @@ public class C206_CaseStudy {
 		System.out.println("5. Logout");
 	}
 
+	// Transaction Menu:
+	public static void transactionMenu() {
+		C206_CaseStudy.setHeader("Transaction");
+		System.out.println("1. Add Transaction");
+		System.out.println("2. View All Transactions");
+		System.out.println("3. Delete Transaction");
+		System.out.println("4. Quit");
+		Helper.line(122, "=");
+	}
+
 	// User Registration - Check Password
 	private static boolean checkPassword(String password) {
 		boolean correctLength = false;
@@ -385,34 +403,227 @@ public class C206_CaseStudy {
 	 * }
 	 */
 	/*
-	 * public static void addTransaction() { // write code
-	 * 
-	 * }
-	 * 
-	 * // Transaction ArrayList<Transaction> transactionList = new
-	 * ArrayList<Transaction>();
-	 * 
-	 * // Add Transaction public static void inputAddTransaction() { Transaction t =
-	 * null;
-	 * 
-	 * int amount = Helper.readInt("Enter amount to be changed > "); String currency
-	 * = Helper.readString("Enter currency > "); String date =
-	 * Helper.readString("Enter today's date > ");
-	 * 
-	 * t = new Transaction(currency, amount, date);
-	 * 
-	 * }
-	 * 
-	 * public static void addTransaction() { // write code
-	 * 
-	 * }
-	 * 
-	 * public static void viewAllTransaction() { // write code }
-	 * 
-	 * public static void deleteTransaction() { // write code
-	 * 
-	 * }
-	 */
+	 * //Add Transaction
+	public static int countTransactionList(ArrayList<Transaction> transactionList, int userID) {
+		int count = 0;
+		
+		for (Transaction t : transactionList) {
+			if (t.getUserID() == userID) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	public static Account getMatchingCustomerAccount(int userID, ArrayList<Account> accountList) {
+		for (int i = 0; i < accountList.size(); i++) {
+			Account customer = accountList.get(i);
+			if (customer.getCustomerID() == userID) {
+				return customer;
+			}
+		}
+		return null;
+	}
+	
+	public static currency getMatchingCurrency(String countryName, ArrayList<currency> currencyList) {
+		for (int i = 0; i < currencyList.size(); i++) {
+			currency matchingCurrency = currencyList.get(i);
+			if (matchingCurrency.getCountry().equalsIgnoreCase(countryName)) {
+				return matchingCurrency;
+			}
+		}
+		return null;
+	}
+	
+	public static User getMatchingUser(int userID, ArrayList<User> userList) {
+		for(int i = 0; i < userList.size(); i++) {
+			User user = userList.get(i);
+			if(user.getUserId() == userID) {
+				return user;
+			}
+		}
+		return null;
+	}
+		
+	public static String getFormattedDate() {
+		LocalDate currDate = LocalDate.now();
+		// Create a DateTimeFormatter for desired format
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
+		// Use the format method to format the LocalDate object
+		return formatter.format(currDate);
+	}
+	
+	// Call from main.	
+	public static void addTransactionInput(ArrayList<Transaction> transactionList, ArrayList<Account> accountList, ArrayList<currency> currencyList) {
+		int userID = Helper.readInt("Enter User ID > ");
+		String countryName = Helper.readString("Enter Country > ");
+		double amount = Helper.readDouble("Enter Amount to be exchanged > ");
+		
+		addTransaction(transactionList, accountList, currencyList, userID, countryName, amount);
+	}
+
+	// Actual logic.
+	public static void addTransaction(ArrayList<Transaction> transactionList, ArrayList<Account> accountList, ArrayList<currency> currencyList, int userID, String countryName, double amount) {
+		// Find user account.		
+		Account customerAcc = getMatchingCustomerAccount(userID, accountList);
+		
+		if (customerAcc == null) {
+			System.out.println("Account not found!");
+			return;
+		}
+	
+		// Find matching country - currency
+		currency matchingCurrency = getMatchingCurrency(countryName, currencyList);
+		
+		if (matchingCurrency == null) {
+			System.out.println("Country not found!");
+			return;
+		}
+		
+		double newBalance = customerAcc.getAccountBalance() - amount;
+		
+		int transactionCount = countTransactionList(transactionList, userID);
+		
+		if (newBalance < 0) {
+			System.out.println("Insufficient balance!");
+			return;
+		}
+		
+		transactionList.add(new Transaction(userID, (transactionCount + 1), getFormattedDate(), amount, matchingCurrency.getCurrency(), newBalance));
+		customerAcc.setAccountBalance(newBalance);
+		
+		System.out.println("Transaction added successfully!");
+		return;
+	}
+
+View All Transaction:
+	//View All Transactions
+	public static String retrieveAllTransaction(ArrayList<Transaction> transactionList, int userID) {
+		String output = "";
+		for(int i = 0; i < transactionList.size(); i++) {
+			if(transactionList.get(i).getUserID() == userID) {
+				output += String.format("%-15d %-15d %-18s $%-19.2f %-20s $%-17.2f %-10s\n", transactionList.get(i).getUserID(), transactionList.get(i).getTransactionID(), 
+						transactionList.get(i).getTransactionDate(), transactionList.get(i).getAmount(), 
+						transactionList.get(i).getDesiredCurrency(), transactionList.get(i).getBalance(), 
+						transactionList.get(i).getStatus());
+			}
+		}
+		return output;
+	}
+	
+	public static void viewAllTransactionInput(ArrayList<Transaction> transactionList, ArrayList<User> userList) {
+		int userID = Helper.readInt("Enter User ID > ");
+		
+		viewAllTransaction(transactionList, userList, userID);
+	}
+	
+	public static void viewAllTransaction(ArrayList<Transaction> transactionList, ArrayList<User> userList, int userID) {
+		User matchingUser = getMatchingUser(userID, userList);
+		
+		if(matchingUser == null) {
+			System.out.println("User not found!");
+			return;
+		}
+		
+		C206_CaseStudy.setHeader("View All Transaction");
+		String output = String.format("%-15s %-15s %-18s %-20s %-20s %-18s %-10s\n", "User ID", "Transaction ID", 
+				"Transaction Date", "Amount Exchanged", "Desired Currency", "Account Balance", "Status");
+
+		output += retrieveAllTransaction(transactionList, userID);
+		System.out.println(output);
+		Helper.line(122, "=");
+	}
+
+Delete Transaction:
+	//Delete Transaction
+	public static Transaction getMatchingTransactionUserID(int userID, ArrayList<Transaction> transactionList) { //match user id
+		for(int i = 0; i < transactionList.size(); i++) {
+			if(transactionList.get(i).getUserID() == userID) {
+				Transaction transaction = transactionList.get(i);
+				return transaction;
+			}
+		}
+		return null;
+	}
+	
+	public static Transaction getMatchingTransactionID(int deleteID, ArrayList<Transaction> transactionList) { //match transaction id
+		for(int i = 0; i < transactionList.size(); i++) {
+			Transaction transaction = transactionList.get(i);
+			if(transaction.getTransactionID() == deleteID) {
+				return transaction;
+			}
+		}
+		return null;
+	}
+	
+	public static char getMatchingConfirm(char confirm) {
+		if (confirm == 'Y' || confirm == 'y') {
+			return confirm;
+		}else {
+			return 'N';
+		}
+	}
+	
+	public static Transaction doDeleteUserTransaction(int userID, int deleteID, ArrayList<Transaction> transactionList) {
+		for(int i = 0; i < transactionList.size(); i++) {
+			if(transactionList.get(i).getUserID() == userID) {
+				if(transactionList.get(i).getTransactionID() == deleteID) {
+					Transaction deleteTransaction = transactionList.get(i);
+					deleteTransaction = transactionList.remove(i);
+					return deleteTransaction;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static void deleteTransactionInput(ArrayList<Transaction> transactionList, ArrayList<User> userList) {
+		int userID = Helper.readInt("Enter User ID > ");
+		for(int i = 0; i < transactionList.size(); i++) {
+			if(transactionList.get(i).getUserID() == userID) {
+				String output = retrieveAllTransaction(transactionList, userID);
+				System.out.println(output);
+				Helper.line(122, "=");
+				
+				int deleteID = Helper.readInt("Enter Transaction ID to delete > ");
+				char confirm = Helper.readChar("Are you sure you wish to delete Transaction " + deleteID + " (Y/N) > ");
+				
+				deleteTransaction(transactionList, userList, userID, deleteID, confirm);
+				break;
+			}
+		}		
+	}
+	
+	public static void deleteTransaction(ArrayList<Transaction> transactionList, ArrayList<User> userList, int userID, int deleteID, char confirm) {
+		Transaction matchingTransactionUserID = getMatchingTransactionUserID(userID, transactionList);
+		
+		if(matchingTransactionUserID == null) {
+			System.out.println("User not found!");
+			return;
+		}
+				
+	    Transaction matchingTransactionID = getMatchingTransactionID(deleteID, transactionList);
+	    
+	    if (matchingTransactionID == null) {
+	    	System.out.println("Transaction ID not found!");
+	    	return;
+	    }
+	    
+	    char matchingConfirm = getMatchingConfirm(confirm);
+	    
+	    if(matchingConfirm == 'N') {
+	    	System.out.println("Transaction deletion canceled!");
+	    	return;
+	    }
+	    
+	    Transaction deleteUserTransaction = doDeleteUserTransaction(userID, deleteID, transactionList);
+	    
+	    if(deleteUserTransaction != null) {
+	    	System.out.println("Transaction deleted!");
+	    	return;
+	    }
+	}
 
 	// ACCOUNT
 	// Account
