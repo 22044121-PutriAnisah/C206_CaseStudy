@@ -1,0 +1,88 @@
+public class Transaction {
+	//transaction details
+	private int userID;
+	private int transactionID;
+	private String transactionDate;
+	private double amount; //amount to be exchanged
+	private String desiredCurrency; //desired currency
+	private String status; //set transaction status
+	private double balance; //set bank account balance
+	
+	public Transaction(int userID, int transactionID, String transactionDate, double amount, String desiredCurrency, double balance, String status) {
+		super();
+		this.userID = userID;
+		this.transactionID = transactionID;
+		this.transactionDate = transactionDate;
+		this.amount = amount;
+		this.desiredCurrency = desiredCurrency;
+		this.status = status;
+		this.balance = balance;
+	}
+
+	public Transaction(int userID, int transactionID, String transactionDate, double amount, String desiredCurrency, double balance) {
+		super();
+		this.userID = userID;
+		this.transactionID = transactionID;
+		this.transactionDate = transactionDate;
+		this.amount = amount;
+		this.desiredCurrency = desiredCurrency;
+		this.balance = balance;
+		this.status = "Pending";
+	}
+
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	public int getTransactionID() {
+		return transactionID;
+	}
+
+	public void setTransactionID(int transactionID) {
+		this.transactionID = transactionID;
+	}
+
+	public String getTransactionDate() {
+		return transactionDate;
+	}
+
+	public void setTransactionDate(String transactionDate) {
+		this.transactionDate = transactionDate;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
+	}
+
+	public String getDesiredCurrency() {
+		return desiredCurrency;
+	}
+
+	public void setDesiredCurrency(String desiredCurrency) {
+		this.desiredCurrency = desiredCurrency;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+}
