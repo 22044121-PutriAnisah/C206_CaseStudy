@@ -14,6 +14,10 @@ public class C206_CaseStudyTest {
 	private User user2;
 	private User user3;
 
+	private currency c1;
+	private currency c2;
+	private currency c3;
+	
 	private Transaction t1;
 	private Transaction t2;
 	private Transaction t3;
@@ -145,7 +149,100 @@ public class C206_CaseStudyTest {
 	}
 	
 	// Currency
+	@Test
+	public void testAddNewCurrency() {
+		
+		// Item list is not null and it is empty
+		assertNotNull("Test if there is valid Currency array to add to", currencyArr);
+		assertEquals("Test that the currency array is empty.",  currencyArr.length);
+		// Given an empty list, after adding 1 item, the size of the list is 1
+		C206_CaseStudy.addCurrency(c1);
+		assertEquals("Test that the currency array size is 1.", 1,currencyArr.length);
+
+		// Add an item
+		C206_CaseStudy.addCurrency(c2);
+		assertEquals("Test that the currency array length is now 2.", 2,currencyArr.length);
+		// The item just added is as same as the last item in the list
+		assertSame("Test that currency is added to the end of the list.", c2, currencyArr[1]);
+
+		// Add an item that already exists in the list
+		C206_CaseStudy.addCurrency(c3);
+		assertEquals("Test that the currency array size is unchange.", 2, currencyArr.length);
+
+		// Add an item that has missing details
+		C206_CaseStudy.addCurrency(c3); 
+		assertEquals("Test that the currency array size remains unchanged.", 2, currencyArr.length);
+
+		// Verify that c3 is not added to the list due to missing details
+		assertFalse("Test thatc3 is not added to the list.", currencyArr[2]);
+	}
 	
+	@Test
+	public void testRetrieveAllCurrency() {//comment
+		//Test Case 1
+		// Test if Item list is not null and empty
+		assertNotNull("Test if there is valid currency array to add to", currencyArr);
+		assertEquals("Test that the currency array is empty.", 0, currencyArr.length);
+		// Attempt to view the Users 
+		String allCurrency= C206_CaseStudy.retrieveAllCurrency(currencyArr);
+		String testOutput = "";
+		// Test if the output is empty
+		assertEquals("Test that nothing is displayed", testOutput, allCurrency);
+		
+		// Test Case 2
+		C206_CaseStudy.addCurrency(c1);
+		C206_CaseStudy.addCurrency(c2);
+		// Test that the list is not empty
+		assertEquals("Test that currency arrya size is 2.", 2, currencyArr.length);
+		// Attempt to view the currency
+		allCurrency = C206_CaseStudy.retrieveAllCurrency(currencyArr);
+		testOutput = String.format("%-15s, %-15s", "COUNTRY","CURRENCY");
+		testOutput += String.format("%-15s %-15s","Singapore","SGD");
+		// Test that the details are displayed correctly
+		assertEquals("Test that the display is correct.", testOutput, allCurrency);
+		
+		//Test Case 3
+	    C206_CaseStudy.deleteExistingCurrency(currencyArr);
+	    // Test that the list size has decreased
+	    assertEquals("Test that User arraylist size is 1 after deleting a user.", 1, currencyArr.length));
+
+	    // Try to view the currency after deletion
+	    allCurrency = C206_CaseStudy.retrieveAllCurrency(currencyArr);
+	    testOutput = String.format("%-15s, %-15s", "COUNTRY","CURRENCY");
+		testOutput += String.format("%-15s %-15s","Singapore","SGD");
+	    // Test that the display shows only one currency after deletion
+	    assertEquals("Test that the display is correct after deleting a user.", testOutput, allCurrency);
+
+	}
+	
+	@Test
+	public void testDeleteExistingCurrency() {
+	    // Test Case 1
+	    assertNotNull("Test if there is valid currency array to delete from", currencyArr);
+	    assertEquals("Test that the currency array is empty.", 0, currencyArr.length);
+	    // Add some currency to the currency array for testing
+	    C206_CaseStudy.addCurrency(c1);
+        C206_CaseStudy.addCurrency(c2);
+
+	    // Test Case 2
+	    // Test if currency array size 2
+	    assertEquals("Test that currency array size is 2.", 2, currencyArr.length);
+
+	    // Test Case 3 
+	    C206_CaseStudy.deleteExistingCurrency(c1);
+	    // Test if currency is successfully deleted from currency array
+	    assertEquals("Test that User arraylist size is now 1.", 1, currencyArr.length);
+
+	    // Test Case 4 
+	    C206_CaseStudy.deleteExistingCurrency(c2);
+	    // Test if the correct currency is deleted from the currency array
+	    assertSame("Test that the correct user is deleted.", 2, currencyArr[0]);
+
+	    // Test Case 5 
+	    C206_CaseStudy.deleteExistingCurrency(currencyArr);
+	    // Test if currency array is empty after all currencies are deleted
+	    assertEquals("Test that User arraylist size is 0.", 0,currencyArr.length);
+	}
 	// Account
 	
 	//Transaction
@@ -240,9 +337,9 @@ public class C206_CaseStudyTest {
 	  public void setUp() throws Exception {
 	    //prepare test data
 	    
-	      u1 = new User(2, "Customer", "Alan Tan", "alantan@abc.com", "Alantan_123", 80081234);
-	      u2 = new User(3, "Customer", "Barbie", "barbie@123.com", "Barbie_234", 81171345);
-	      u3 = new User(4, "Customer", "Ken", "ken02@hotmail.com", "Ken_345", 82261456);
+	      user1 = new User(2, "Customer", "Alan Tan", "alantan@abc.com", "Alantan_123", "80081234");
+	      user2 = new User(3, "Customer", "Barbie", "barbie@123.com", "Barbie_234", "81171345");
+	      user3 = new User(4, "Customer", "Ken", "ken02@hotmail.com", "Ken_345", "82261456");
 	      userList = new ArrayList<User>();
 	    feedbackList = new ArrayList<feedback>();
 	   
@@ -305,9 +402,9 @@ public class C206_CaseStudyTest {
 	    //normal
 	    C206_CaseStudy.addFeedback(feedbackList, fb1);
 	    C206_CaseStudy.addFeedback(feedbackList, fb2);
-	    userList.add(u1);
-	    userList.add(u2);
-	    userList.add(u3);
+	    userList.add(user1);
+	    userList.add(user2);
+	    userList.add(user3);
 	    C206_CaseStudy.editFeedback(feedbackList, userList);
 	    assertEquals("Check that editted feedback has been updated", "good customer service", feedbackList.get(0).getfeedback());
 	  }
@@ -331,7 +428,11 @@ public class C206_CaseStudyTest {
 		admin1 = null;
 		userList = null;
 		adminList = null;
-
+		
+		c1 = null;
+		c2 = null;
+		c3 = null;
+		
 		t1 = null;
 		t2 = null;
 		t3 = null;
