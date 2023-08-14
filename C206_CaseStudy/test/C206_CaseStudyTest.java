@@ -17,6 +17,10 @@ public class C206_CaseStudyTest {
 	private currency c1;
 	private currency c2;
 	private currency c3;
+
+	private Account account1;
+	private Account account2;
+	private Account account3;
 	
 	private Transaction t1;
 	private Transaction t2;
@@ -43,10 +47,7 @@ public class C206_CaseStudyTest {
 		user2 = new User(4, "customer", "Ken", "ken02@hotmail.com", "Ken_345", 82261456);
 		
 		adminList = new ArrayList<Admin>();
-		userList = new ArrayList<User>();
-
-		
-		
+		userList = new ArrayList<User>();	
 	}
 
 	@Test
@@ -244,7 +245,99 @@ public class C206_CaseStudyTest {
 	    assertEquals("Test that User arraylist size is 0.", 0,currencyArr.length);
 	}
 	// Account
-	
+	Before
+	public void setUp() throws Exception {
+		// prepare test data
+		account1 = new Account(1, 1, 355.22, "Active", "alantannn", "Alantan_123", "80081234");
+		account2 = new Account(2, 2, 177.11, "Active", "bensimmm", "Bensim_456", "98765432");
+		account3 = new Account(3, 3, 99.33, "Active", "johnanggg", "Johnang_789", "91827364");
+		accountList = new ArrayList<Account>();
+
+	}
+
+	@Test
+	public void testAddAccount() {
+		// Account list is not null and it is empty
+		assertNotNull("Test if there is valid Account arraylist to add to.", accountList);
+		assertEquals("Test that the Account arraylist is empty.", 0, accountList.size());
+
+		// Given an empty list, after adding 1 item, the size of the list is 1
+		C206_CaseStudy.addAccount(accountList);
+		assertEquals("Test that the Account arraylist size is 1.", 1, accountList.size());
+
+		// Add an account
+		C206_CaseStudy.addAccount(accountList);
+		assertEquals("Test that the Account arraylist size is now 2.", 2, accountList.size());
+
+		// The account just added is as same as the last item in the list
+		C206_CaseStudy.addAccount(accountList);
+		assertEquals("Test that the Account arraylist size is unchange.", account2, accountList.get(1));
+
+		// Add an account that already exists in the list
+		C206_CaseStudy.addAccount(accountList);
+		assertEquals("Test that the Account arraylist size is unchange.", 2, accountList.size());
+
+		// Add an account that has missing detail
+		Account a_missing = new Account(4, 4, 129.22, "Active", "johnlimm", "Johnlim_123", "");
+		C206_CaseStudy.addAccount(accountList);
+		assertEquals("Test that the Account arraylist size is unchange.", 2, accountList.size());
+
+	}
+
+	@Test
+	public void testViewAccounts() {
+		// Test Case 1
+		// Test if Account list is not null and empty
+		assertNotNull("Test if there is valid Account arraylist to add to.", accountList);
+		assertEquals("Test that the Account arraylist is empty.", 0, accountList.size());
+
+		// Attempt to view the Accounts
+		String allAccounts = C206_CaseStudy.viewAllAccounts(accountList);
+		String testOutput = String.format("%-15s %-15s %-20s %-10s %-15s %-15s %-15s\n", "ACCOUNT ID", "CUSTOMER ID",
+				"ACCOUNT BALANCE", "STATUS", "USERNAME", "PASSWORD", "CONTACT INFO");
+
+		// Test if the output is empty
+		assertEquals("Test that nothing is displayed.", testOutput, allAccounts);
+
+		// Test Case 2
+		C206_CaseStudy.readAccountInput();
+		C206_CaseStudy.readAccountInput();
+		
+		// Test that the list is not empty
+		assertEquals("Test that the Account arrayList size is 2.", 2, accountList.size());
+
+		// Attempt to view the Accounts
+		allAccounts = C206_CaseStudy.viewAllAccounts(accountList);
+		testOutput = String.format("%-15d %-15d %-20.2f %-10s %-15s %-15s %-15s\n", 1, 1, 355.22, "Active", "alantannn",
+				"Alantan_123", "80081234");
+		testOutput += String.format("%-15d %-15d %-20.2f %-10s %-15s %-15s %-15s\n", 2, 2, 177.11, "Active", "bensimmm",
+				"Bensim_456", "98765432");
+
+		// Test that the details are displayed correctly
+		assertEquals("Test that the display is correct.", testOutput, allAccounts);
+
+	}
+
+	@Test
+	public void testDeleteAccount() {
+
+		// Test Case 1: Delete an existing account (normal)
+		assertNotNull("Test if there is valid Account arrayList to add to.", accountList);
+		C206_CaseStudy.addAccount(accountList);
+		boolean okay = C206_CaseStudy.deleteAccount(accountList);
+		assertTrue("Test if account is successfully deleted.", okay);
+		Boolean isDeleted = C206_CaseStudy.deleteAccount(accountList);
+		assertTrue("Test if the account is successfully deleted.", isDeleted);
+
+		// Test Case 2: Delete an account that is already deleted (boundary)
+		isDeleted = C206_CaseStudy.deleteAccount(accountList);
+		assertFalse("Test that the deletion fails.", isDeleted);
+
+		// Test Case 3: Delete an item that does not exist (error)
+		isDeleted = C206_CaseStudy.deleteAccount(accountList);
+		assertFalse("Test that the deletion fails.", isDeleted);
+
+	}
 	//Transaction
 	@Before
 	public void setUp() throws Exception {
@@ -432,6 +525,10 @@ public class C206_CaseStudyTest {
 		c1 = null;
 		c2 = null;
 		c3 = null;
+
+		account1 = null;
+		account2 = null;
+		account3 = null;
 		
 		t1 = null;
 		t2 = null;
